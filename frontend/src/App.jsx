@@ -49,7 +49,7 @@ function App() {
   };
 
   return (
-    <div style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden', background: '#090d16' }}>
+    <div style={{ display: 'flex', width: '100vw', height: '100vh', overflow: 'hidden', background: '#f8fafc' }}>
       
       {/* Sidebar Navigation */}
       <Sidebar

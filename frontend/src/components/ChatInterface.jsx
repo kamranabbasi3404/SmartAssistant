@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Send, Bot, User, Trash2, Sparkles, Wrench, Calculator, Globe, RefreshCw } from 'lucide-react';
+import { Send, Bot, User, Trash2, Wrench, Calculator, Globe, RefreshCw } from 'lucide-react';
 
 const ChatInterface = ({ apiKey, onChatStart }) => {
   const [messages, setMessages] = useState([
@@ -109,20 +109,21 @@ const ChatInterface = ({ apiKey, onChatStart }) => {
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0.75rem 1rem',
-        background: 'rgba(18, 24, 38, 0.6)',
+        background: '#ffffff',
         borderRadius: '12px',
-        border: '1px solid rgba(255, 255, 255, 0.08)'
+        border: '1px solid #e2e8f0',
+        boxShadow: '0 1px 3px rgba(15, 23, 42, 0.03)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <span style={{ fontSize: '0.85rem', color: '#9ca3af', fontWeight: 500 }}>Agent Tools Routing:</span>
+          <span style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 500 }}>Agent Tools Routing:</span>
           <button
             onClick={() => setUseTools(!useTools)}
             style={{
               padding: '0.35rem 0.75rem',
               borderRadius: '20px',
-              border: useTools ? '1px solid rgba(6, 182, 212, 0.4)' : '1px solid rgba(255, 255, 255, 0.1)',
-              background: useTools ? 'rgba(6, 182, 212, 0.15)' : 'rgba(255, 255, 255, 0.04)',
-              color: useTools ? '#22d3ee' : '#6b7280',
+              border: useTools ? '1px solid rgba(2, 132, 199, 0.4)' : '1px solid #cbd5e1',
+              background: useTools ? 'rgba(2, 132, 199, 0.1)' : '#f8fafc',
+              color: useTools ? '#0284c7' : '#64748b',
               fontSize: '0.8rem',
               cursor: 'pointer',
               fontWeight: 600,
@@ -170,23 +171,24 @@ const ChatInterface = ({ apiKey, onChatStart }) => {
                 width: '36px',
                 height: '36px',
                 borderRadius: '10px',
-                background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+                background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                flexShrink: 0
+                flexShrink: 0,
+                boxShadow: '0 4px 12px rgba(79, 70, 229, 0.25)'
               }}>
                 <Bot size={20} color="#fff" />
               </div>
             )}
 
             <div style={{
-              background: msg.role === 'user' ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : 'rgba(18, 24, 38, 0.85)',
-              border: msg.role === 'user' ? 'none' : '1px solid rgba(255, 255, 255, 0.08)',
+              background: msg.role === 'user' ? 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)' : '#ffffff',
+              border: msg.role === 'user' ? 'none' : '1px solid #e2e8f0',
               padding: '1rem 1.25rem',
               borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-              color: '#f3f4f6',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+              color: msg.role === 'user' ? '#ffffff' : '#0f172a',
+              boxShadow: msg.role === 'user' ? '0 4px 14px rgba(79, 70, 229, 0.25)' : '0 2px 8px rgba(15, 23, 42, 0.04)',
               fontSize: '0.95rem',
               lineHeight: '1.6'
             }}>
@@ -210,13 +212,13 @@ const ChatInterface = ({ apiKey, onChatStart }) => {
                 width: '36px',
                 height: '36px',
                 borderRadius: '10px',
-                background: 'rgba(255, 255, 255, 0.1)',
+                background: '#e2e8f0',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexShrink: 0
               }}>
-                <User size={20} color="#cbd5e1" />
+                <User size={20} color="#475569" />
               </div>
             )}
           </div>
@@ -228,7 +230,7 @@ const ChatInterface = ({ apiKey, onChatStart }) => {
               width: '36px',
               height: '36px',
               borderRadius: '10px',
-              background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+              background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
@@ -236,15 +238,16 @@ const ChatInterface = ({ apiKey, onChatStart }) => {
               <Bot size={20} color="#fff" />
             </div>
             <div style={{
-              background: 'rgba(18, 24, 38, 0.85)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
+              background: '#ffffff',
+              border: '1px solid #e2e8f0',
               padding: '0.85rem 1.25rem',
               borderRadius: '18px 18px 18px 4px',
-              color: '#818cf8',
+              color: '#4f46e5',
               display: 'flex',
               alignItems: 'center',
               gap: '0.6rem',
-              fontSize: '0.9rem'
+              fontSize: '0.9rem',
+              boxShadow: '0 2px 8px rgba(15, 23, 42, 0.04)'
             }}>
               <RefreshCw size={16} className="spin" style={{ animation: 'spin 1.5s linear infinite' }} />
               <span>Thinking & reasoning...</span>
@@ -262,23 +265,26 @@ const ChatInterface = ({ apiKey, onChatStart }) => {
               key={idx}
               onClick={() => handleSend(s.text)}
               style={{
-                background: 'rgba(255, 255, 255, 0.04)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
+                background: '#ffffff',
+                border: '1px solid #e2e8f0',
                 padding: '0.45rem 0.85rem',
                 borderRadius: '20px',
-                color: '#cbd5e1',
+                color: '#334155',
                 fontSize: '0.8rem',
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
-                transition: 'all 0.2s ease'
+                transition: 'all 0.2s ease',
+                boxShadow: '0 1px 2px rgba(15, 23, 42, 0.03)'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(99, 102, 241, 0.15)';
-                e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.3)';
+                e.currentTarget.style.background = 'rgba(79, 70, 229, 0.08)';
+                e.currentTarget.style.borderColor = 'rgba(79, 70, 229, 0.3)';
+                e.currentTarget.style.color = '#4f46e5';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                e.currentTarget.style.background = '#ffffff';
+                e.currentTarget.style.borderColor = '#e2e8f0';
+                e.currentTarget.style.color = '#334155';
               }}
             >
               {s.label}

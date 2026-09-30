@@ -23,7 +23,7 @@ const ApiKeyModal = ({ isOpen, onClose, apiKey, saveApiKey }) => {
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(0, 0, 0, 0.75)',
+      background: 'rgba(15, 23, 42, 0.4)',
       backdropFilter: 'blur(8px)',
       display: 'flex',
       alignItems: 'center',
@@ -38,7 +38,10 @@ const ApiKeyModal = ({ isOpen, onClose, apiKey, saveApiKey }) => {
         position: 'relative',
         display: 'flex',
         flexDirection: 'column',
-        gap: '1.25rem'
+        gap: '1.25rem',
+        background: '#ffffff',
+        boxShadow: '0 20px 40px rgba(15, 23, 42, 0.15)',
+        border: '1px solid #e2e8f0'
       }}>
         <button
           onClick={onClose}
@@ -48,7 +51,7 @@ const ApiKeyModal = ({ isOpen, onClose, apiKey, saveApiKey }) => {
             right: '1.25rem',
             background: 'transparent',
             border: 'none',
-            color: '#9ca3af',
+            color: '#64748b',
             cursor: 'pointer'
           }}
         >
@@ -60,22 +63,22 @@ const ApiKeyModal = ({ isOpen, onClose, apiKey, saveApiKey }) => {
             width: '42px',
             height: '42px',
             borderRadius: '12px',
-            background: 'rgba(99, 102, 241, 0.2)',
-            border: '1px solid rgba(99, 102, 241, 0.4)',
+            background: 'rgba(79, 70, 229, 0.1)',
+            border: '1px solid rgba(79, 70, 229, 0.25)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-            <Key size={22} color="#818cf8" />
+            <Key size={22} color="#4f46e5" />
           </div>
           <div>
-            <h3 style={{ fontSize: '1.2rem', color: '#fff' }}>Configure Gemini API Key</h3>
-            <p style={{ fontSize: '0.85rem', color: '#9ca3af' }}>Your API key stays securely in your browser session.</p>
+            <h3 style={{ fontSize: '1.2rem', color: '#0f172a' }}>Configure Gemini API Key</h3>
+            <p style={{ fontSize: '0.85rem', color: '#64748b' }}>Your API key stays securely in your browser session.</p>
           </div>
         </div>
 
         <div>
-          <label style={{ display: 'block', fontSize: '0.85rem', color: '#d1d5db', marginBottom: '0.5rem', fontWeight: 500 }}>
+          <label style={{ display: 'block', fontSize: '0.85rem', color: '#334155', marginBottom: '0.5rem', fontWeight: 500 }}>
             Google Gemini API Key
           </label>
           <input
@@ -88,12 +91,12 @@ const ApiKeyModal = ({ isOpen, onClose, apiKey, saveApiKey }) => {
         </div>
 
         <div style={{
-          background: 'rgba(99, 102, 241, 0.1)',
-          border: '1px solid rgba(99, 102, 241, 0.2)',
+          background: 'rgba(79, 70, 229, 0.06)',
+          border: '1px solid rgba(79, 70, 229, 0.2)',
           padding: '0.85rem',
           borderRadius: '10px',
           fontSize: '0.82rem',
-          color: '#c7d2fe',
+          color: '#334155',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between'
@@ -103,7 +106,7 @@ const ApiKeyModal = ({ isOpen, onClose, apiKey, saveApiKey }) => {
             href="https://aistudio.google.com/"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: '#818cf8', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem', textDecoration: 'none' }}
+            style={{ color: '#4f46e5', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.3rem', textDecoration: 'none' }}
           >
             Get Key <ExternalLink size={14} />
           </a>

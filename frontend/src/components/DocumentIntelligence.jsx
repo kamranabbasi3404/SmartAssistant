@@ -84,8 +84,8 @@ const DocumentIntelligence = ({ apiKey }) => {
       <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <h2 style={{ fontSize: '1.25rem', color: '#fff', marginBottom: '0.25rem' }}>Document Intelligence Hub</h2>
-            <p style={{ fontSize: '0.88rem', color: '#9ca3af' }}>Upload company policies, reports, PDFs, DOCX, or TXT documents for strict AI context extraction.</p>
+            <h2 style={{ fontSize: '1.25rem', color: '#0f172a', marginBottom: '0.25rem' }}>Document Intelligence Hub</h2>
+            <p style={{ fontSize: '0.88rem', color: '#64748b' }}>Upload company policies, reports, PDFs, DOCX, or TXT documents for strict AI context extraction.</p>
           </div>
 
           <label className="btn-primary" style={{ cursor: 'pointer' }}>
@@ -103,9 +103,9 @@ const DocumentIntelligence = ({ apiKey }) => {
 
         {errorMsg && (
           <div style={{
-            background: 'rgba(239, 68, 68, 0.15)',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
-            color: '#f87171',
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid rgba(239, 68, 68, 0.25)',
+            color: '#dc2626',
             padding: '0.75rem 1rem',
             borderRadius: '10px',
             fontSize: '0.85rem',
@@ -121,8 +121,8 @@ const DocumentIntelligence = ({ apiKey }) => {
         {/* Uploaded File Stats Card */}
         {docData && (
           <div style={{
-            background: 'rgba(99, 102, 241, 0.08)',
-            border: '1px solid rgba(99, 102, 241, 0.25)',
+            background: 'rgba(79, 70, 229, 0.05)',
+            border: '1px solid rgba(79, 70, 229, 0.2)',
             padding: '1rem 1.25rem',
             borderRadius: '12px',
             display: 'flex',
@@ -136,17 +136,17 @@ const DocumentIntelligence = ({ apiKey }) => {
                 width: '42px',
                 height: '42px',
                 borderRadius: '10px',
-                background: 'rgba(99, 102, 241, 0.2)',
+                background: 'rgba(79, 70, 229, 0.12)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
               }}>
-                <FileCheck size={24} color="#818cf8" />
+                <FileCheck size={24} color="#4f46e5" />
               </div>
               <div>
-                <h4 style={{ fontSize: '1rem', color: '#fff', fontWeight: 600 }}>{docData.filename}</h4>
-                <div style={{ display: 'flex', gap: '0.8rem', fontSize: '0.78rem', color: '#9ca3af', marginTop: '0.2rem' }}>
-                  <span>Format: <strong style={{ color: '#a5b4fc', uppercase: 'true' }}>{docData.ext.toUpperCase()}</strong></span>
+                <h4 style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 600 }}>{docData.filename}</h4>
+                <div style={{ display: 'flex', gap: '0.8rem', fontSize: '0.78rem', color: '#64748b', marginTop: '0.2rem' }}>
+                  <span>Format: <strong style={{ color: '#4f46e5' }}>{docData.ext.toUpperCase()}</strong></span>
                   <span>• Words: <strong>{docData.word_count.toLocaleString()}</strong></span>
                   <span>• Pages: <strong>{docData.pages}</strong></span>
                   <span>• Chars: <strong>{docData.char_count.toLocaleString()}</strong></span>
@@ -154,7 +154,7 @@ const DocumentIntelligence = ({ apiKey }) => {
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#4ade80', fontSize: '0.82rem', fontWeight: 600 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#16a34a', fontSize: '0.82rem', fontWeight: 600 }}>
               <CheckCircle size={16} /> Document Ingested & Ready
             </div>
           </div>
@@ -167,7 +167,7 @@ const DocumentIntelligence = ({ apiKey }) => {
           
           {/* Action Toolbox */}
           <div className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: 600 }}>AI Analysis Actions</h3>
+            <h3 style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 600 }}>AI Analysis Actions</h3>
             
             <button
               onClick={() => handleAnalyze('summarize')}
@@ -176,14 +176,14 @@ const DocumentIntelligence = ({ apiKey }) => {
               style={{
                 justifyContent: 'flex-start',
                 padding: '0.85rem 1rem',
-                border: activeAction === 'summarize' ? '1px solid #818cf8' : '1px solid rgba(255, 255, 255, 0.08)',
-                background: activeAction === 'summarize' ? 'rgba(99, 102, 241, 0.2)' : 'transparent'
+                border: activeAction === 'summarize' ? '1px solid #4f46e5' : '1px solid #e2e8f0',
+                background: activeAction === 'summarize' ? 'rgba(79, 70, 229, 0.08)' : '#ffffff'
               }}
             >
-              <FileText size={18} color="#818cf8" />
+              <FileText size={18} color="#4f46e5" />
               <div style={{ textAlign: 'left' }}>
-                <div style={{ fontSize: '0.88rem', fontWeight: 600 }}>Summarize Document</div>
-                <div style={{ fontSize: '0.72rem', color: '#9ca3af' }}>Generate executive summary</div>
+                <div style={{ fontSize: '0.88rem', fontWeight: 600, color: '#0f172a' }}>Summarize Document</div>
+                <div style={{ fontSize: '0.72rem', color: '#64748b' }}>Generate executive summary</div>
               </div>
             </button>
 
@@ -194,14 +194,14 @@ const DocumentIntelligence = ({ apiKey }) => {
               style={{
                 justifyContent: 'flex-start',
                 padding: '0.85rem 1rem',
-                border: activeAction === 'key_topics' ? '1px solid #c084fc' : '1px solid rgba(255, 255, 255, 0.08)',
-                background: activeAction === 'key_topics' ? 'rgba(192, 132, 252, 0.2)' : 'transparent'
+                border: activeAction === 'key_topics' ? '1px solid #7c3aed' : '1px solid #e2e8f0',
+                background: activeAction === 'key_topics' ? 'rgba(124, 58, 237, 0.08)' : '#ffffff'
               }}
             >
-              <Layers size={18} color="#c084fc" />
+              <Layers size={18} color="#7c3aed" />
               <div style={{ textAlign: 'left' }}>
-                <div style={{ fontSize: '0.88rem', fontWeight: 600 }}>Identify Key Topics</div>
-                <div style={{ fontSize: '0.72rem', color: '#9ca3af' }}>Extract core concepts & rules</div>
+                <div style={{ fontSize: '0.88rem', fontWeight: 600, color: '#0f172a' }}>Identify Key Topics</div>
+                <div style={{ fontSize: '0.72rem', color: '#64748b' }}>Extract core concepts & rules</div>
               </div>
             </button>
 
@@ -212,22 +212,22 @@ const DocumentIntelligence = ({ apiKey }) => {
               style={{
                 justifyContent: 'flex-start',
                 padding: '0.85rem 1rem',
-                border: activeAction === 'extract_info' ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.08)',
-                background: activeAction === 'extract_info' ? 'rgba(56, 189, 248, 0.2)' : 'transparent'
+                border: activeAction === 'extract_info' ? '1px solid #0284c7' : '1px solid #e2e8f0',
+                background: activeAction === 'extract_info' ? 'rgba(2, 132, 199, 0.08)' : '#ffffff'
               }}
             >
-              <ListChecks size={18} color="#38bdf8" />
+              <ListChecks size={18} color="#0284c7" />
               <div style={{ textAlign: 'left' }}>
-                <div style={{ fontSize: '0.88rem', fontWeight: 600 }}>Extract Key Information</div>
-                <div style={{ fontSize: '0.72rem', color: '#9ca3af' }}>Stats, dates, & quantitative data</div>
+                <div style={{ fontSize: '0.88rem', fontWeight: 600, color: '#0f172a' }}>Extract Key Information</div>
+                <div style={{ fontSize: '0.72rem', color: '#64748b' }}>Stats, dates, & quantitative data</div>
               </div>
             </button>
 
-            <hr style={{ borderColor: 'rgba(255, 255, 255, 0.08)', margin: '0.5rem 0' }} />
+            <hr style={{ borderColor: '#e2e8f0', margin: '0.5rem 0' }} />
 
             {/* Document Q&A Section */}
             <div>
-              <label style={{ display: 'block', fontSize: '0.85rem', color: '#fff', marginBottom: '0.5rem', fontWeight: 600 }}>
+              <label style={{ display: 'block', fontSize: '0.85rem', color: '#0f172a', marginBottom: '0.5rem', fontWeight: 600 }}>
                 Strict Document Q&A
               </label>
               <textarea
@@ -251,26 +251,26 @@ const DocumentIntelligence = ({ apiKey }) => {
 
           {/* Results Output Window */}
           <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', minHeight: '400px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.75rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Sparkles size={18} color="#818cf8" />
-                <h3 style={{ fontSize: '1rem', color: '#fff', fontWeight: 600 }}>
+                <Sparkles size={18} color="#4f46e5" />
+                <h3 style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 600 }}>
                   {analyzing ? 'AI Analyzing Document...' : 'Analysis Results'}
                 </h3>
               </div>
             </div>
 
-            <div style={{ flex: 1, overflowY: 'auto', lineHeight: '1.65', color: '#e5e7eb', fontSize: '0.95rem' }}>
+            <div style={{ flex: 1, overflowY: 'auto', lineHeight: '1.65', color: '#1e293b', fontSize: '0.95rem' }}>
               {analyzing ? (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '1rem', color: '#9ca3af' }}>
-                  <Sparkles size={32} className="pulse-glow" color="#818cf8" />
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '1rem', color: '#64748b' }}>
+                  <Sparkles size={32} className="pulse-glow" color="#4f46e5" />
                   <span>Processing context and compiling answer from document...</span>
                 </div>
               ) : analysisResult ? (
                 <ReactMarkdown>{analysisResult}</ReactMarkdown>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#6b7280', gap: '0.75rem' }}>
-                  <FileText size={40} color="rgba(255, 255, 255, 0.15)" />
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#94a3b8', gap: '0.75rem' }}>
+                  <FileText size={40} color="#cbd5e1" />
                   <p>Select an analysis action from the left toolbox or ask a question about your uploaded document.</p>
                 </div>
               )}
@@ -285,16 +285,16 @@ const DocumentIntelligence = ({ apiKey }) => {
             width: '64px',
             height: '64px',
             borderRadius: '20px',
-            background: 'rgba(99, 102, 241, 0.15)',
+            background: 'rgba(79, 70, 229, 0.1)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             marginBottom: '0.5rem'
           }}>
-            <FileText size={32} color="#818cf8" />
+            <FileText size={32} color="#4f46e5" />
           </div>
-          <h3 style={{ fontSize: '1.25rem', color: '#fff' }}>No Document Ingested Yet</h3>
-          <p style={{ color: '#9ca3af', maxWidth: '450px', fontSize: '0.9rem', lineHeight: '1.5' }}>
+          <h3 style={{ fontSize: '1.25rem', color: '#0f172a' }}>No Document Ingested Yet</h3>
+          <p style={{ color: '#64748b', maxWidth: '450px', fontSize: '0.9rem', lineHeight: '1.5' }}>
             Upload a PDF, DOCX, or TXT document above to start summarizing, asking strict context-bound questions, or extracting key info.
           </p>
         </div>
