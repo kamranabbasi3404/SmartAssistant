@@ -58,6 +58,7 @@ function App() {
         openApiKeyModal={() => setIsModalOpen(true)}
         hasApiKey={hasApiKey}
         isOpen={isSidebarOpen}
+        toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
       />
 
       {/* Main Workspace Area */}
