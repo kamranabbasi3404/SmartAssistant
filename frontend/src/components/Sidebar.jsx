@@ -11,11 +11,11 @@ const Sidebar = ({ activeTab, setActiveTab, openApiKeyModal, hasApiKey, isOpen }
 
   return (
     <aside style={{
-      width: isOpen ? '260px' : '0px',
-      minWidth: isOpen ? '260px' : '0px',
+      width: isOpen ? '275px' : '0px',
+      minWidth: isOpen ? '275px' : '0px',
       opacity: isOpen ? 1 : 0,
       visibility: isOpen ? 'visible' : 'hidden',
-      padding: isOpen ? '1.25rem 1rem' : '1.25rem 0px',
+      padding: isOpen ? '1.25rem 0.85rem' : '1.25rem 0px',
       background: 'rgba(10, 14, 24, 0.95)',
       borderRight: isOpen ? '1px solid rgba(255, 255, 255, 0.08)' : 'none',
       display: 'flex',
@@ -24,10 +24,11 @@ const Sidebar = ({ activeTab, setActiveTab, openApiKeyModal, hasApiKey, isOpen }
       gap: '1.5rem',
       backdropFilter: 'blur(20px)',
       overflow: 'hidden',
-      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      boxSizing: 'border-box'
     }}>
       {/* Brand Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0.5rem', whiteSpace: 'nowrap' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0.4rem', whiteSpace: 'nowrap' }}>
         <div style={{
           width: '40px',
           height: '40px',
@@ -42,14 +43,14 @@ const Sidebar = ({ activeTab, setActiveTab, openApiKeyModal, hasApiKey, isOpen }
           <Bot size={24} color="#ffffff" />
         </div>
         <div>
-          <h2 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#fff', lineHeight: 1.2 }}>Smart Assistant</h2>
+          <h2 style={{ fontSize: '1.05rem', fontWeight: '700', color: '#fff', lineHeight: 1.2 }}>Smart Assistant</h2>
           <span style={{ fontSize: '0.75rem', color: '#9ca3af', fontWeight: 500 }}>AI Productivity Suite</span>
         </div>
       </div>
 
       {/* Navigation Links */}
       <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: 1, whiteSpace: 'nowrap' }}>
-        <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#6b7280', letterSpacing: '0.05em', padding: '0 0.5rem 0.4rem 0.5rem', fontWeight: 600 }}>
+        <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#6b7280', letterSpacing: '0.05em', padding: '0 0.4rem 0.4rem 0.4rem', fontWeight: 600 }}>
           Modules
         </div>
         {navItems.map((item) => {
@@ -60,10 +61,12 @@ const Sidebar = ({ activeTab, setActiveTab, openApiKeyModal, hasApiKey, isOpen }
               key={item.id}
               onClick={() => setActiveTab(item.id)}
               style={{
+                width: '100%',
+                boxSizing: 'border-box',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '0.75rem 0.85rem',
+                padding: '0.7rem 0.75rem',
                 borderRadius: '10px',
                 border: isActive ? '1px solid rgba(99, 102, 241, 0.4)' : '1px solid transparent',
                 background: isActive ? 'rgba(99, 102, 241, 0.15)' : 'transparent',
@@ -73,16 +76,18 @@ const Sidebar = ({ activeTab, setActiveTab, openApiKeyModal, hasApiKey, isOpen }
                 fontWeight: isActive ? 600 : 400
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <Icon size={18} color={isActive ? '#818cf8' : '#9ca3af'} />
-                <span style={{ fontSize: '0.9rem' }}>{item.label}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', minWidth: 0, overflow: 'hidden' }}>
+                <Icon size={18} color={isActive ? '#818cf8' : '#9ca3af'} style={{ flexShrink: 0 }} />
+                <span style={{ fontSize: '0.85rem', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.label}</span>
               </div>
               <span style={{
-                fontSize: '0.68rem',
+                fontSize: '0.65rem',
                 background: isActive ? 'rgba(129, 140, 248, 0.25)' : 'rgba(255, 255, 255, 0.05)',
                 color: isActive ? '#a5b4fc' : '#6b7280',
                 padding: '0.15rem 0.45rem',
-                borderRadius: '6px'
+                borderRadius: '6px',
+                flexShrink: 0,
+                marginLeft: '0.35rem'
               }}>
                 {item.badge}
               </span>
