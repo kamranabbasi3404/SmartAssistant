@@ -5,11 +5,45 @@ from google.genai import types
 from config import GEMINI_API_KEY, DEFAULT_MODEL
 from services.tools_service import execute_calculator, execute_web_search
 
+MODEL_CANDIDATES = [
+    DEFAULT_MODEL,
+    "gemini-3.6-flash",
+    "gemini-3.5-flash",
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+    "gemini-3.1-flash-lite"
+]
+
 def get_genai_client(api_key: Optional[str] = None) -> genai.Client:
     key = api_key or GEMINI_API_KEY
     if not key or key == "your_gemini_api_key_here":
         raise ValueError("Missing Gemini API Key. Please configure GEMINI_API_KEY in backend/.env or enter your key in UI Settings.")
     return genai.Client(api_key=key)
+
+def safe_generate_content(client: genai.Client, contents: Any, config: Optional[types.GenerateContentConfig] = None):
+    """Generates content with automatic fallback if a model experiences 503 capacity limit or 404 error."""
+    last_exception = None
+    # Deduplicate while preserving order
+    seen = set()
+    models_to_try = [m for m in MODEL_CANDIDATES if not (m in seen or seen.add(m))]
+
+    for model in models_to_try:
+        try:
+            return client.models.generate_content(
+                model=model,
+                contents=contents,
+                config=config
+            )
+        except Exception as e:
+            err_str = str(e)
+            if "503" in err_str or "UNAVAILABLE" in err_str or "404" in err_str or "NOT_FOUND" in err_str or "capacity" in err_str.lower():
+                last_exception = e
+                continue
+            raise e
+            
+    if last_exception:
+        raise last_exception
+
 
 # Define Tool Functions for Gemini Function Calling
 def tool_calculator(expression: str) -> str:
@@ -44,10 +78,9 @@ def generate_chat_response(
     api_key: Optional[str] = None,
     use_tools: bool = True
 ) -> Dict[str, Any]:
-    """Generates chat response with optional tool calling."""
+    """Generates chat response with optional tool calling and automatic model fallback."""
     client = get_genai_client(api_key)
     
-    # System instruction
     system_instruction = (
         "You are an intelligent, friendly, and highly capable AI Productivity Assistant. "
         "Provide clear, accurate, and visually polished markdown responses. "
@@ -55,7 +88,6 @@ def generate_chat_response(
         "use the provided tools when appropriate."
     )
     
-    # Format chat history for Gemini SDK
     contents = []
     for msg in messages:
         role = "user" if msg.get("role") == "user" else "model"
@@ -74,13 +106,8 @@ def generate_chat_response(
     tools_used = []
     
     try:
-        response = client.models.generate_content(
-            model=DEFAULT_MODEL,
-            contents=contents,
-            config=config
-        )
+        response = safe_generate_content(client, contents=contents, config=config)
         
-        # Handle function calls loop if Gemini invoked tools
         if response.function_calls:
             for call in response.function_calls:
                 fn_name = call.name
@@ -93,7 +120,6 @@ def generate_chat_response(
                 elif fn_name == "tool_web_search":
                     tool_output = tool_web_search(fn_args.get("query", ""))
                 
-                # Append tool call and tool response to conversation for final resolution
                 contents.append(types.Content(
                     role="model",
                     parts=[types.Part.from_function_call(name=fn_name, args=fn_args)]
@@ -103,9 +129,8 @@ def generate_chat_response(
                     parts=[types.Part.from_function_response(name=fn_name, response={"result": tool_output})]
                 ))
             
-            # Second turn to get final natural language answer
-            final_response = client.models.generate_content(
-                model=DEFAULT_MODEL,
+            final_response = safe_generate_content(
+                client,
                 contents=contents,
                 config=types.GenerateContentConfig(system_instruction=system_instruction)
             )
@@ -155,8 +180,8 @@ def analyze_document(
         prompt = f"Analyze the following document:\n\n{document_text}"
 
     try:
-        response = client.models.generate_content(
-            model=DEFAULT_MODEL,
+        response = safe_generate_content(
+            client,
             contents=prompt,
             config=types.GenerateContentConfig(system_instruction=system_instruction, temperature=0.2)
         )
@@ -184,8 +209,8 @@ def generate_content(
     prompt = f"Content Task: Generate a {content_type}\nTone: {tone}\nFormat Style: {format_style}\n\nDetails & Instructions:\n{user_prompt}"
 
     try:
-        response = client.models.generate_content(
-            model=DEFAULT_MODEL,
+        response = safe_generate_content(
+            client,
             contents=prompt,
             config=types.GenerateContentConfig(system_instruction=system_instruction, temperature=0.7)
         )

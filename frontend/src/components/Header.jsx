@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cpu, ShieldCheck, PanelLeft, PanelLeftClose } from 'lucide-react';
+import { Cpu, ShieldCheck, PanelLeft } from 'lucide-react';
 
 const Header = ({ activeTabTitle, isSidebarOpen, toggleSidebar }) => {
   return (
@@ -14,33 +14,35 @@ const Header = ({ activeTabTitle, isSidebarOpen, toggleSidebar }) => {
       padding: '0 1.5rem'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        <button
-          onClick={toggleSidebar}
-          title={isSidebarOpen ? 'Close Sidebar' : 'Open Sidebar'}
-          style={{
-            background: 'rgba(255, 255, 255, 0.06)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '10px',
-            width: '38px',
-            height: '38px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#cbd5e1',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(99, 102, 241, 0.2)';
-            e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.4)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
-            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-          }}
-        >
-          {isSidebarOpen ? <PanelLeftClose size={20} /> : <PanelLeft size={20} />}
-        </button>
+        {!isSidebarOpen && (
+          <button
+            onClick={toggleSidebar}
+            title="Open Sidebar"
+            style={{
+              background: 'rgba(255, 255, 255, 0.06)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '10px',
+              width: '38px',
+              height: '38px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#cbd5e1',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(99, 102, 241, 0.2)';
+              e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            }}
+          >
+            <PanelLeft size={20} />
+          </button>
+        )}
 
         <h1 style={{ fontSize: '1.2rem', fontWeight: '700', color: '#f3f4f6' }}>{activeTabTitle}</h1>
       </div>

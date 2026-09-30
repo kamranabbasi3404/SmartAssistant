@@ -1,7 +1,7 @@
 import React from 'react';
-import { MessageSquare, FileText, Sparkles, Wrench, Key, Bot } from 'lucide-react';
+import { MessageSquare, FileText, Sparkles, Wrench, Key, Bot, PanelLeftClose } from 'lucide-react';
 
-const Sidebar = ({ activeTab, setActiveTab, openApiKeyModal, hasApiKey, isOpen }) => {
+const Sidebar = ({ activeTab, setActiveTab, openApiKeyModal, hasApiKey, isOpen, toggleSidebar }) => {
   const navItems = [
     { id: 'chat', label: 'AI Chat Interface', icon: MessageSquare, badge: 'Core' },
     { id: 'document', label: 'Document Intelligence', icon: FileText, badge: 'RAG' },
@@ -27,25 +27,58 @@ const Sidebar = ({ activeTab, setActiveTab, openApiKeyModal, hasApiKey, isOpen }
       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
       boxSizing: 'border-box'
     }}>
-      {/* Brand Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0.4rem', whiteSpace: 'nowrap' }}>
-        <div style={{
-          width: '40px',
-          height: '40px',
-          borderRadius: '12px',
-          background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-          boxShadow: '0 0 20px rgba(99, 102, 241, 0.4)'
-        }}>
-          <Bot size={24} color="#ffffff" />
+      {/* Brand Header with Close Sidebar Button */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.4rem 0.4rem', whiteSpace: 'nowrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+          <div style={{
+            width: '38px',
+            height: '38px',
+            borderRadius: '12px',
+            background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+            boxShadow: '0 0 20px rgba(99, 102, 241, 0.4)'
+          }}>
+            <Bot size={22} color="#ffffff" />
+          </div>
+          <div>
+            <h2 style={{ fontSize: '1rem', fontWeight: '700', color: '#fff', lineHeight: 1.2 }}>Smart Assistant</h2>
+            <span style={{ fontSize: '0.72rem', color: '#9ca3af', fontWeight: 500 }}>AI Productivity Suite</span>
+          </div>
         </div>
-        <div>
-          <h2 style={{ fontSize: '1.05rem', fontWeight: '700', color: '#fff', lineHeight: 1.2 }}>Smart Assistant</h2>
-          <span style={{ fontSize: '0.75rem', color: '#9ca3af', fontWeight: 500 }}>AI Productivity Suite</span>
-        </div>
+
+        <button
+          onClick={toggleSidebar}
+          title="Collapse Sidebar"
+          style={{
+            background: 'rgba(255, 255, 255, 0.05)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '8px',
+            width: '32px',
+            height: '32px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#9ca3af',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            flexShrink: 0
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(99, 102, 241, 0.2)';
+            e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.4)';
+            e.currentTarget.style.color = '#ffffff';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+            e.currentTarget.style.color = '#9ca3af';
+          }}
+        >
+          <PanelLeftClose size={18} />
+        </button>
       </div>
 
       {/* Navigation Links */}
