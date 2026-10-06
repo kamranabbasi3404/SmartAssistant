@@ -1,12 +1,9 @@
 import os
 import time
 import uuid
-import smtplib
 import hashlib
 import requests
 import jwt
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from typing import Optional, Dict, Any
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -16,11 +13,10 @@ from sqlalchemy.orm import Session
 from database import UserModel, get_db
 from config import (
     GOOGLE_CLIENT_ID,
-    SMTP_SERVER,
-    SMTP_PORT,
-    SMTP_USERNAME,
-    SMTP_PASSWORD,
-    SMTP_FROM_EMAIL,
+    EMAILJS_SERVICE_ID,
+    EMAILJS_TEMPLATE_ID,
+    EMAILJS_PUBLIC_KEY,
+    EMAILJS_PRIVATE_KEY,
     FRONTEND_URL
 )
 
@@ -61,45 +57,63 @@ def decode_access_token(token: str) -> Optional[dict]:
         return None
 
 def send_verification_email(email: str, name: str, token: str) -> str:
-    """Send Email Confirmation Link via SMTP."""
+    """Send Email Confirmation Link via EmailJS REST API."""
     verification_link = f"{FRONTEND_URL}/?verify_token={token}"
     
-    if not SMTP_USERNAME or not SMTP_PASSWORD:
-        print(f"\n==================================================")
-        print(f"[EMAIL VERIFICATION SENT] To: {email}")
-        print(f"Confirmation Link: {verification_link}")
-        print(f"==================================================\n")
-        return verification_link
-
-    try:
-        msg = MIMEMultipart("alternative")
-        msg["Subject"] = "Confirm Your Smart Assistant Account"
-        msg["From"] = SMTP_FROM_EMAIL
-        msg["To"] = email
-
-        html_content = f"""
-        <html>
-          <body style="font-family: Arial, sans-serif; background-color: #f8fafc; padding: 20px;">
-            <div style="max-width: 500px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 16px; border: 1px solid #e2e8f0;">
-              <h2 style="color: #4f46e5; margin-top: 0;">Welcome, {name}!</h2>
-              <p style="color: #475569; font-size: 15px;">Thank you for registering with AI Smart Assistant. Please click the button below to confirm your email address and activate your account:</p>
-              <div style="text-align: center; margin: 30px 0;">
-                <a href="{verification_link}" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 10px; font-weight: bold; display: inline-block;">Confirm Email Address</a>
-              </div>
-              <p style="color: #94a3b8; font-size: 13px;">If you did not request this email, please ignore it.</p>
-            </div>
-          </body>
-        </html>
-        """
-        msg.attach(MIMEText(html_content, "html"))
-
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.starttls()
-            server.login(SMTP_USERNAME, SMTP_PASSWORD)
-            server.sendmail(SMTP_FROM_EMAIL, email, msg.as_string())
-    except Exception as e:
-        print(f"[SMTP EMAIL ERROR] Could not send email: {e}")
+    html_content = f"""
+    <html>
+      <body style="font-family: Arial, sans-serif; background-color: #f8fafc; padding: 20px;">
+        <div style="max-width: 500px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 16px; border: 1px solid #e2e8f0;">
+          <h2 style="color: #4f46e5; margin-top: 0;">Welcome, {name}!</h2>
+          <p style="color: #475569; font-size: 15px;">Thank you for registering with AI Smart Assistant. Please click the button below to confirm your email address and activate your account:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="{verification_link}" style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 10px; font-weight: bold; display: inline-block;">Confirm Email Address</a>
+          </div>
+          <p style="color: #94a3b8; font-size: 13px;">If you did not request this email, please ignore it.</p>
+        </div>
+      </body>
+    </html>
+    """
     
+    # Send via EmailJS REST API (HTTPS Port 443)
+    if EMAILJS_SERVICE_ID and EMAILJS_TEMPLATE_ID and EMAILJS_PUBLIC_KEY and EMAILJS_SERVICE_ID != "service_id_here":
+        try:
+            payload = {
+                "service_id": EMAILJS_SERVICE_ID,
+                "template_id": EMAILJS_TEMPLATE_ID,
+                "user_id": EMAILJS_PUBLIC_KEY,
+                "template_params": {
+                    "to_email": email,
+                    "to_name": name,
+                    "user_name": name,
+                    "user_email": email,
+                    "verification_link": verification_link,
+                    "html_content": html_content
+                }
+            }
+            if EMAILJS_PRIVATE_KEY:
+                payload["accessToken"] = EMAILJS_PRIVATE_KEY
+
+            res = requests.post(
+                "https://api.emailjs.com/api/v1.0/email/send",
+                headers={"Content-Type": "application/json"},
+                json=payload,
+                timeout=10
+            )
+            if res.status_code == 200:
+                print(f"[EMAILJS SUCCESS] Email sent to {email}")
+                return verification_link
+            else:
+                print(f"[EMAILJS WARNING] Status {res.status_code}: {res.text}")
+        except Exception as e:
+            print(f"[EMAILJS ERROR] Could not send email via EmailJS API: {e}")
+    else:
+        print(f"\n==================================================")
+        print(f"[EMAILJS READY] Set EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, and EMAILJS_PUBLIC_KEY in .env")
+        print(f"To: {email}")
+        print(f"Verification Link: {verification_link}")
+        print(f"==================================================\n")
+
     return verification_link
 
 def register_user(req: UserRegister, db: Session) -> Dict[str, Any]:
@@ -121,7 +135,7 @@ def register_user(req: UserRegister, db: Session) -> Dict[str, Any]:
         email=email_clean,
         password_hash=_hash_password(req.password),
         role="Verified User",
-        avatar=f"https://api.dicebear.com/7.x/avataaars/svg?seed={email_clean}",
+        avatar=f"https://api.dicebear.com/7.x/bottts/svg?seed={email_clean}",
         is_verified=False,
         verification_token=verification_token,
         failed_attempts=0,
@@ -267,7 +281,7 @@ def google_oauth_login(req: GoogleOAuthRequest, db: Session) -> Dict[str, Any]:
 
     email_clean = google_payload.get("email", "").strip().lower()
     name = google_payload.get("name", "Google User")
-    avatar = google_payload.get("picture", f"https://api.dicebear.com/7.x/avataaars/svg?seed={email_clean}")
+    avatar = google_payload.get("picture", f"https://api.dicebear.com/7.x/bottts/svg?seed={email_clean}")
 
     if not email_clean:
         raise HTTPException(

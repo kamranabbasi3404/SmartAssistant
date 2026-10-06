@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 
 const AuthContext = createContext();
 
@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
   });
   const [loading, setLoading] = useState(true);
   const [verifyNotice, setVerifyNotice] = useState(null);
+  const processedTokenRef = useRef(null);
 
   const saveAuthData = (newToken, newUser) => {
     setToken(newToken);
@@ -45,6 +46,13 @@ export const AuthProvider = ({ children }) => {
       const verifyToken = urlParams.get('verify_token');
 
       if (verifyToken) {
+        if (processedTokenRef.current === verifyToken) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+          setLoading(false);
+          return;
+        }
+        processedTokenRef.current = verifyToken;
+
         try {
           const res = await fetch(`${API_BASE_URL}/auth/verify-email?token=${verifyToken}`);
           const data = await res.json();
@@ -136,6 +144,32 @@ export const AuthProvider = ({ children }) => {
     if (!res.ok) {
       throw new Error(data.detail || 'Registration failed.');
     }
+
+    // Trigger EmailJS dispatch from Browser (bypasses non-browser 403 API restriction)
+    if (data.verification_link) {
+      try {
+        await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            service_id: 'service_lrfy3pl',
+            template_id: 'template_mjikmu5',
+            user_id: 'OePEkyjf7EZqhlzZQ',
+            template_params: {
+              to_email: email,
+              to_name: name,
+              user_name: name,
+              user_email: email,
+              verification_link: data.verification_link
+            }
+          })
+        });
+        console.log('[EmailJS Browser Dispatch] Confirmation email triggered to:', email);
+      } catch (err) {
+        console.warn('[EmailJS Browser Dispatch Warning]', err);
+      }
+    }
+
     return data;
   };
 
