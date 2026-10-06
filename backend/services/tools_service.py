@@ -2,7 +2,17 @@ import math
 import re
 import requests
 from typing import Dict, Any, List
-from duckduckgo_search import DDGS
+
+def get_ddgs_instance():
+    try:
+        from ddgs import DDGS
+        return DDGS
+    except ImportError:
+        try:
+            from duckduckgo_search import DDGS
+            return DDGS
+        except ImportError:
+            return None
 
 def execute_calculator(expression: str) -> Dict[str, Any]:
     """Safely evaluates a mathematical expression."""
@@ -34,21 +44,51 @@ def execute_calculator(expression: str) -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 def execute_web_search(query: str, max_results: int = 4) -> Dict[str, Any]:
-    """Performs a live web search using DuckDuckGo."""
-    try:
-        results = []
-        with DDGS() as ddgs:
-            ddg_results = ddgs.text(query, max_results=max_results)
-            for item in ddg_results:
-                results.append({
-                    "title": item.get("title", ""),
-                    "snippet": item.get("body", ""),
-                    "url": item.get("href", "")
-                })
+    """Performs a live web search using DuckDuckGo with fallback."""
+    results = []
+    
+    # 1. Primary: Use ddgs / duckduckgo_search
+    DDGSClass = get_ddgs_instance()
+    if DDGSClass:
+        try:
+            with DDGSClass() as ddgs:
+                ddg_results = ddgs.text(query, max_results=max_results)
+                for item in ddg_results:
+                    results.append({
+                        "title": item.get("title", ""),
+                        "snippet": item.get("body", ""),
+                        "url": item.get("href", "")
+                    })
+        except Exception as e:
+            print(f"[DDGS SEARCH WARNING] {e}")
+
+    # 2. Fallback: Wikipedia Search API if DDGS returned 0 results
+    if not results:
+        try:
+            wiki_res = requests.get(
+                "https://en.wikipedia.org/w/api.php",
+                params={
+                    "action": "query",
+                    "list": "search",
+                    "srsearch": query,
+                    "format": "json",
+                    "utf8": 1
+                },
+                timeout=6
+            )
+            if wiki_res.status_code == 200:
+                search_data = wiki_res.json().get("query", {}).get("search", [])
+                for item in search_data[:max_results]:
+                    clean_snippet = re.sub(r'<[^>]+>', '', item.get("snippet", ""))
+                    results.append({
+                        "title": item.get("title", ""),
+                        "snippet": clean_snippet,
+                        "url": f"https://en.wikipedia.org/wiki/{item.get('title', '').replace(' ', '_')}"
+                    })
+        except Exception as e:
+            print(f"[WIKI SEARCH FALLBACK WARNING] {e}")
+
+    if not results:
+        return {"success": False, "message": "No relevant search results found.", "results": []}
         
-        if not results:
-            return {"success": False, "message": "No search results found.", "results": []}
-            
-        return {"success": True, "query": query, "results": results}
-    except Exception as e:
-        return {"success": False, "error": str(e), "results": []}
+    return {"success": True, "query": query, "results": results}
