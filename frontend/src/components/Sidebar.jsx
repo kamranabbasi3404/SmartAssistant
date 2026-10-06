@@ -1,7 +1,10 @@
 import React from 'react';
-import { MessageSquare, FileText, Sparkles, Wrench, Key, Bot, PanelLeftClose } from 'lucide-react';
+import { MessageSquare, FileText, Sparkles, Wrench, Key, Bot, PanelLeftClose, ShieldCheck, UserCheck, LogIn } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
-const Sidebar = ({ activeTab, setActiveTab, openApiKeyModal, hasApiKey, isOpen, toggleSidebar }) => {
+const Sidebar = ({ activeTab, setActiveTab, openApiKeyModal, openAuthModal, hasApiKey, isOpen, toggleSidebar }) => {
+  const { user, isAuthenticated } = useAuth();
+
   const navItems = [
     { id: 'chat', label: 'AI Chat Interface', icon: MessageSquare, badge: 'Core' },
     { id: 'document', label: 'Document Intelligence', icon: FileText, badge: 'RAG' },
@@ -20,7 +23,7 @@ const Sidebar = ({ activeTab, setActiveTab, openApiKeyModal, hasApiKey, isOpen, 
       display: 'flex',
       flexDirection: 'column',
       height: '100vh',
-      gap: '1.5rem',
+      gap: '1.25rem',
       boxShadow: '2px 0 12px rgba(15, 23, 42, 0.03)',
       overflow: 'hidden',
       transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -114,7 +117,7 @@ const Sidebar = ({ activeTab, setActiveTab, openApiKeyModal, hasApiKey, isOpen, 
       </div>
 
       {/* Navigation Links */}
-      <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1, whiteSpace: 'nowrap', alignItems: isOpen ? 'stretch' : 'center' }}>
+      <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: 1, whiteSpace: 'nowrap', alignItems: isOpen ? 'stretch' : 'center' }}>
         {isOpen && (
           <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: '#94a3b8', letterSpacing: '0.05em', padding: '0 0.4rem 0.2rem 0.4rem', fontWeight: 700 }}>
             Modules
@@ -180,11 +183,11 @@ const Sidebar = ({ activeTab, setActiveTab, openApiKeyModal, hasApiKey, isOpen, 
         })}
       </nav>
 
-      {/* API Key Status Footer */}
+      {/* Auth & API Key Section */}
       <div style={{
         background: '#f8fafc',
         border: '1px solid #e2e8f0',
-        borderRadius: '12px',
+        borderRadius: '14px',
         padding: isOpen ? '0.85rem' : '0.5rem',
         display: 'flex',
         flexDirection: 'column',
@@ -194,11 +197,42 @@ const Sidebar = ({ activeTab, setActiveTab, openApiKeyModal, hasApiKey, isOpen, 
       }}>
         {isOpen ? (
           <>
+            {/* OAuth2 Badge */}
+            <button
+              onClick={openAuthModal}
+              style={{
+                background: isAuthenticated ? 'rgba(34, 197, 94, 0.08)' : 'rgba(79, 70, 229, 0.08)',
+                border: isAuthenticated ? '1px solid rgba(34, 197, 94, 0.25)' : '1px solid rgba(79, 70, 229, 0.25)',
+                borderRadius: '10px',
+                padding: '0.5rem 0.65rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                cursor: 'pointer',
+                textAlign: 'left'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <ShieldCheck size={16} color={isAuthenticated ? '#16a34a' : '#4f46e5'} />
+                <div>
+                  <div style={{ fontSize: '0.78rem', fontWeight: 600, color: '#1e293b' }}>
+                    {isAuthenticated ? user.name : 'OAuth 2.0 Auth'}
+                  </div>
+                  <div style={{ fontSize: '0.65rem', color: isAuthenticated ? '#16a34a' : '#4f46e5' }}>
+                    {isAuthenticated ? (user.role || 'Authorized') : 'Click to Sign In'}
+                  </div>
+                </div>
+              </div>
+              {!isAuthenticated && <LogIn size={14} color="#4f46e5" />}
+            </button>
+
+            <div style={{ borderTop: '1px solid #e2e8f0', margin: '0.1rem 0' }}></div>
+
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 500 }}>Gemini API</span>
+              <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 500 }}>Gemini API</span>
               <span style={{
-                fontSize: '0.7rem',
-                padding: '0.15rem 0.5rem',
+                fontSize: '0.68rem',
+                padding: '0.15rem 0.45rem',
                 borderRadius: '12px',
                 background: hasApiKey ? 'rgba(34, 197, 94, 0.12)' : 'rgba(239, 68, 68, 0.12)',
                 color: hasApiKey ? '#16a34a' : '#dc2626',
@@ -208,35 +242,55 @@ const Sidebar = ({ activeTab, setActiveTab, openApiKeyModal, hasApiKey, isOpen, 
                 {hasApiKey ? 'Connected' : 'Key Needed'}
               </span>
             </div>
+
             <button
               onClick={openApiKeyModal}
               className="btn-secondary"
-              style={{ width: '100%', justifyContent: 'center', fontSize: '0.8rem', padding: '0.5rem' }}
+              style={{ width: '100%', justifyContent: 'center', fontSize: '0.78rem', padding: '0.45rem' }}
             >
               <Key size={14} /> Configure API Key
             </button>
           </>
         ) : (
-          /* Mini API Key Button */
-          <button
-            onClick={openApiKeyModal}
-            title={hasApiKey ? 'Gemini API Connected' : 'Configure API Key'}
-            style={{
-              width: '38px',
-              height: '38px',
-              borderRadius: '10px',
-              background: '#ffffff',
-              border: hasApiKey ? '1px solid rgba(34, 197, 94, 0.4)' : '1px solid rgba(239, 68, 68, 0.4)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: hasApiKey ? '#16a34a' : '#dc2626',
-              cursor: 'pointer',
-              position: 'relative'
-            }}
-          >
-            <Key size={16} />
-          </button>
+          <>
+            <button
+              onClick={openAuthModal}
+              title={isAuthenticated ? `Authenticated as ${user.name}` : 'OAuth 2.0 Sign In'}
+              style={{
+                width: '38px',
+                height: '38px',
+                borderRadius: '10px',
+                background: '#ffffff',
+                border: isAuthenticated ? '1px solid rgba(34, 197, 94, 0.4)' : '1px solid rgba(79, 70, 229, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: isAuthenticated ? '#16a34a' : '#4f46e5',
+                cursor: 'pointer'
+              }}
+            >
+              <ShieldCheck size={18} />
+            </button>
+
+            <button
+              onClick={openApiKeyModal}
+              title={hasApiKey ? 'Gemini API Connected' : 'Configure API Key'}
+              style={{
+                width: '38px',
+                height: '38px',
+                borderRadius: '10px',
+                background: '#ffffff',
+                border: hasApiKey ? '1px solid rgba(34, 197, 94, 0.4)' : '1px solid rgba(239, 68, 68, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: hasApiKey ? '#16a34a' : '#dc2626',
+                cursor: 'pointer'
+              }}
+            >
+              <Key size={16} />
+            </button>
+          </>
         )}
       </div>
     </aside>

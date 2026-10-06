@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Send, Bot, User, Trash2, Wrench, Calculator, Globe, RefreshCw } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
-const ChatInterface = ({ apiKey, onChatStart }) => {
+const ChatInterface = ({ apiKey, onChatStart, openAuthModal }) => {
+  const { authFetch, isAuthenticated } = useAuth();
   const [messages, setMessages] = useState([
     {
       role: 'model',
@@ -27,6 +29,12 @@ const ChatInterface = ({ apiKey, onChatStart }) => {
     const queryText = textToSend || input;
     if (!queryText.trim() || loading) return;
 
+    // Gate: Check if user is authenticated
+    if (!isAuthenticated) {
+      if (openAuthModal) openAuthModal();
+      return;
+    }
+
     if (onChatStart) {
       onChatStart();
     }
@@ -40,7 +48,7 @@ const ChatInterface = ({ apiKey, onChatStart }) => {
       const headers = { 'Content-Type': 'application/json' };
       if (apiKey) headers['x-api-key'] = apiKey;
 
-      const response = await fetch('http://127.0.0.1:8000/api/chat', {
+      const response = await authFetch('http://127.0.0.1:8000/api/chat', {
         method: 'POST',
         headers,
         body: JSON.stringify({
@@ -50,6 +58,19 @@ const ChatInterface = ({ apiKey, onChatStart }) => {
       });
 
       const data = await response.json();
+
+      if (response.status === 401) {
+        if (openAuthModal) openAuthModal();
+        setMessages([
+          ...newMessages,
+          {
+            role: 'model',
+            content: '🔒 **Authentication Required**: Please sign in to continue using the AI Assistant.',
+            tools_used: []
+          }
+        ]);
+        return;
+      }
 
       if (response.ok) {
         setMessages([

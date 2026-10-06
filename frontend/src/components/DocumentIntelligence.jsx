@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Upload, FileText, CheckCircle, AlertCircle, Sparkles, HelpCircle, FileCheck, Layers, ListChecks } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
-const DocumentIntelligence = ({ apiKey }) => {
+const DocumentIntelligence = ({ apiKey, openAuthModal }) => {
+  const { authFetch, isAuthenticated } = useAuth();
   const [docData, setDocData] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
@@ -15,6 +17,11 @@ const DocumentIntelligence = ({ apiKey }) => {
     const file = e.target.files[0];
     if (!file) return;
 
+    if (!isAuthenticated) {
+      if (openAuthModal) openAuthModal();
+      return;
+    }
+
     setUploading(true);
     setErrorMsg('');
     setAnalysisResult('');
@@ -23,12 +30,18 @@ const DocumentIntelligence = ({ apiKey }) => {
     formData.append('file', file);
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/document/upload', {
+      const response = await authFetch('http://127.0.0.1:8000/api/document/upload', {
         method: 'POST',
         body: formData
       });
 
       const data = await response.json();
+
+      if (response.status === 401) {
+        if (openAuthModal) openAuthModal();
+        setErrorMsg('Authentication required. Please sign in.');
+        return;
+      }
 
       if (response.ok && data.success) {
         setDocData(data);
@@ -45,6 +58,11 @@ const DocumentIntelligence = ({ apiKey }) => {
   const handleAnalyze = async (action, customQ = null) => {
     if (!docData || !docData.text) return;
 
+    if (!isAuthenticated) {
+      if (openAuthModal) openAuthModal();
+      return;
+    }
+
     setAnalyzing(true);
     setActiveAction(action);
     setErrorMsg('');
@@ -53,7 +71,7 @@ const DocumentIntelligence = ({ apiKey }) => {
       const headers = { 'Content-Type': 'application/json' };
       if (apiKey) headers['x-api-key'] = apiKey;
 
-      const response = await fetch('http://127.0.0.1:8000/api/document/analyze', {
+      const response = await authFetch('http://127.0.0.1:8000/api/document/analyze', {
         method: 'POST',
         headers,
         body: JSON.stringify({

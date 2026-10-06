@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Sparkles, Copy, Download, Check, Mail, Share2, FileSpreadsheet, FileText, ClipboardList } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
-const ContentGenerator = ({ apiKey }) => {
+const ContentGenerator = ({ apiKey, openAuthModal }) => {
+  const { authFetch, isAuthenticated } = useAuth();
   const [contentType, setContentType] = useState('email');
   const [prompt, setPrompt] = useState('Write a professional email asking a client for project requirements.');
   const [tone, setTone] = useState('Professional');
@@ -26,6 +28,11 @@ const ContentGenerator = ({ apiKey }) => {
   const handleGenerate = async () => {
     if (!prompt.trim() || loading) return;
 
+    if (!isAuthenticated) {
+      if (openAuthModal) openAuthModal();
+      return;
+    }
+
     setLoading(true);
     setErrorMsg('');
 
@@ -33,7 +40,7 @@ const ContentGenerator = ({ apiKey }) => {
       const headers = { 'Content-Type': 'application/json' };
       if (apiKey) headers['x-api-key'] = apiKey;
 
-      const response = await fetch('http://127.0.0.1:8000/api/content/generate', {
+      const response = await authFetch('http://127.0.0.1:8000/api/content/generate', {
         method: 'POST',
         headers,
         body: JSON.stringify({

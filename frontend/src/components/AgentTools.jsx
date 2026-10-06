@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Calculator, Globe, Wrench, Play, Terminal, Info } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
-const AgentTools = () => {
+const AgentTools = ({ openAuthModal }) => {
+  const { authFetch, isAuthenticated } = useAuth();
   const [calcInput, setCalcInput] = useState('(25 * 40) + sqrt(144) - pow(2, 5)');
   const [calcResult, setCalcResult] = useState(null);
   const [calcLoading, setCalcLoading] = useState(false);
@@ -12,11 +14,15 @@ const AgentTools = () => {
 
   const handleCalcExecute = async () => {
     if (!calcInput.trim()) return;
+    if (!isAuthenticated) {
+      if (openAuthModal) openAuthModal();
+      return;
+    }
     setCalcLoading(true);
     setCalcResult(null);
 
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/tools/calculator', {
+      const res = await authFetch('http://127.0.0.1:8000/api/tools/calculator', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ expression: calcInput })
@@ -32,11 +38,15 @@ const AgentTools = () => {
 
   const handleSearchExecute = async () => {
     if (!searchQuery.trim()) return;
+    if (!isAuthenticated) {
+      if (openAuthModal) openAuthModal();
+      return;
+    }
     setSearchLoading(true);
     setSearchResults(null);
 
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/tools/web-search', {
+      const res = await authFetch('http://127.0.0.1:8000/api/tools/web-search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: searchQuery })
