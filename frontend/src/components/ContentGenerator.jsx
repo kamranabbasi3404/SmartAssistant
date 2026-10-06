@@ -82,7 +82,7 @@ const ContentGenerator = ({ apiKey, openAuthModal }) => {
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '400px 1fr', gap: '1.25rem', height: 'calc(100vh - 64px)', padding: '1.25rem', overflowY: 'auto' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: '400px 1fr', gap: '1.25rem', height: '100%', padding: '1.25rem', overflowY: 'auto', boxSizing: 'border-box' }}>
       
       {/* Configuration Column */}
       <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>

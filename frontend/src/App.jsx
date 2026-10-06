@@ -40,6 +40,16 @@ function App() {
     checkHealth(apiKey);
   }, [apiKey]);
 
+  // Auto-dismiss notification toast banner after 6 seconds
+  useEffect(() => {
+    if (verifyNotice) {
+      const timer = setTimeout(() => {
+        setVerifyNotice(null);
+      }, 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [verifyNotice]);
+
   const saveApiKey = (newKey) => {
     setApiKey(newKey);
     localStorage.setItem('GEMINI_API_KEY', newKey);
@@ -97,7 +107,8 @@ function App() {
             justifyContent: 'space-between',
             fontSize: '0.875rem',
             fontWeight: 600,
-            animation: 'fadeIn 0.2s ease-out'
+            animation: 'fadeIn 0.2s ease-out',
+            flexShrink: 0
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               {verifyNotice.type === 'success' ? <CheckCircle2 size={18} /> : (verifyNotice.type === 'info' ? <CheckCircle2 size={18} color="#1d4ed8" /> : <AlertTriangle size={18} />)}
@@ -112,7 +123,7 @@ function App() {
           </div>
         )}
 
-        <main style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
+        <main style={{ flex: 1, position: 'relative', overflow: 'hidden', minHeight: 0 }}>
           {activeTab === 'chat' && (
             <ChatInterface
               apiKey={apiKey}

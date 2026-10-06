@@ -61,7 +61,7 @@ const AgentTools = ({ openAuthModal }) => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)', padding: '1.25rem', gap: '1.25rem', overflowY: 'auto' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: '1.25rem', gap: '1.25rem', overflowY: 'auto', boxSizing: 'border-box' }}>
       
       {/* Intro Header */}
       <div className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>

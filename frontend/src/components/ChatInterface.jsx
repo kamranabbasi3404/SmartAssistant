@@ -122,7 +122,7 @@ const ChatInterface = ({ apiKey, onChatStart, openAuthModal }) => {
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)', padding: '1.25rem', gap: '1rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: '1.25rem', gap: '1rem', boxSizing: 'border-box' }}>
       
       {/* Top Toolbar */}
       <div style={{
